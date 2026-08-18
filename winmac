@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# winmac — run Windows-only Steam games on Apple Silicon Macs.
+# winmac: play Windows-only Steam games on Apple Silicon Macs.
 #
 #   winmac doctor              check the environment
 #   winmac setup               install the Wine 11 + Steam stack
@@ -39,7 +39,7 @@ main() {
         status)  load_game "${1:-}"; step_status ;;
         play)
             load_game "${1:-}"
-            step_fetch || die "Fetch incomplete — follow the steps above, then retry."
+            step_fetch || die "Fetch incomplete. Follow the steps above, then retry."
             step_install
             step_launch
             ;;

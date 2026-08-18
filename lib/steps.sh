@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# steps.sh — the pipeline stages.
+# steps.sh: the pipeline stages.
 #
 # Sourced by the `winmac` entrypoint. Never run directly.
 
@@ -8,7 +8,7 @@
 # Config
 # ---------------------------------------------------------------------------
 
-# load_game <name> — source games/<name>.conf and validate it.
+# load_game <name>: source games/<name>.conf and validate it.
 load_game() {
     local name="${1:-}"
     [[ -n "$name" ]] || die "No game given. Try: winmac list"
@@ -78,16 +78,16 @@ step_doctor() {
     fi
 
     command -v brew >/dev/null && log_ok "Homebrew $(brew --version | head -1 | awk '{print $2}')" \
-                               || log_warn "Homebrew not found — required by setup"
+                               || log_warn "Homebrew not found, required by setup"
 
     if [[ -x "$WINE_BIN" ]]; then
         log_ok "Wine: $("$WINE_BIN" --version 2>/dev/null || echo unknown)"
     else
-        log_warn "Wine not installed yet — run: winmac setup"
+        log_warn "Wine not installed yet. Run: winmac setup"
     fi
 
     [[ -d "$WINEPREFIX" ]] && log_ok "Prefix: $WINEPREFIX" \
-                           || log_warn "No prefix yet — run: winmac setup"
+                           || log_warn "No prefix yet. Run: winmac setup"
     [[ -f "$STEAM_DIR_UNIX/Steam.exe" ]] && log_ok "Steam installed in prefix" \
                                          || log_warn "Steam not in prefix yet"
 
@@ -100,7 +100,7 @@ step_doctor() {
 }
 
 # ---------------------------------------------------------------------------
-# setup — Wine 11 + Steam + steamwebhelper wrapper, via upstream
+# setup: Wine 11 + Steam + steamwebhelper wrapper, via upstream
 # ---------------------------------------------------------------------------
 step_setup() {
     require_macos_arm64
@@ -128,7 +128,7 @@ step_setup() {
     log_info "games; it takes an hour and does nothing for OpenGL titles."
 
     if [[ -f "$STEAM_DIR_UNIX/Steam.exe" ]]; then
-        log_ok "Steam is present — setup looks complete"
+        log_ok "Steam is present, setup looks complete"
     else
         log_warn "Steam not detected in the prefix yet."
         log_info "Note: upstream's wrapper step fails the first time, because"
@@ -183,7 +183,7 @@ PYEOF
 }
 
 # ---------------------------------------------------------------------------
-# fetch — download the Windows depot on macOS
+# fetch: download the Windows depot on macOS
 # ---------------------------------------------------------------------------
 step_fetch() {
     require_prefix
@@ -197,7 +197,7 @@ step_fetch() {
 
     if [[ -z "$STEAM_DEPOTID" || -z "$STEAM_MANIFESTID" ]]; then
         log_err "STEAM_DEPOTID and STEAM_MANIFESTID are not set in $GAME_CONF"
-        log_info "See docs/finding-ids.md — SteamDB lists both, and an existing"
+        log_info "See docs/finding-ids.md. SteamDB lists both, and an existing"
         log_info "appmanifest_${STEAM_APPID}.acf contains them too."
         return 1
     fi
@@ -272,7 +272,7 @@ EOF
 }
 
 # ---------------------------------------------------------------------------
-# install — renderer fixes and per-app overrides
+# install: renderer fixes and per-app overrides
 # ---------------------------------------------------------------------------
 step_install() {
     require_prefix
@@ -288,7 +288,7 @@ step_install() {
     case "$RENDERER" in
         mesa-llvmpipe|mesa-zink|auto) _install_mesa ;;
         dxmt)   log_ok "Using DXMT (D3D11 to Metal); upstream installs it already" ;;
-        native) log_ok "Using Wine's own OpenGL — no override installed" ;;
+        native) log_ok "Using Wine's own OpenGL, no override installed" ;;
         *)      die "Unknown RENDERER '$RENDERER' in $GAME_CONF" ;;
     esac
 
@@ -383,7 +383,7 @@ EOF
 }
 
 # ---------------------------------------------------------------------------
-# status — what is actually doing the rendering
+# status: what is actually doing the rendering
 # ---------------------------------------------------------------------------
 step_status() {
     log_step "Status"

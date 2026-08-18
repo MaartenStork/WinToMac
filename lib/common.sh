@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# common.sh — logging, guards, and shared paths.
+# common.sh: logging, guards, and shared paths.
 #
 # Sourced by lib/steps.sh and the `winmac` entrypoint. Never run directly.
 
@@ -63,7 +63,7 @@ require_macos_arm64() {
 
 require_cmd() {
     command -v "$1" >/dev/null 2>&1 \
-        || die "Missing required command: $1${2:+ — $2}"
+        || die "Missing required command: $1${2:+ ($2)}"
 }
 
 require_prefix() {
