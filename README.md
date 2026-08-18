@@ -1,7 +1,7 @@
 # winmac
 
-Play **Steam** games that only ship a Windows build on your Apple Silicon Mac,
-set up from a single config file.
+Play Windows-only Steam games on your Apple Silicon Mac, set up from a single
+config file.
 
 ```bash
 ./winmac play mewgenics
