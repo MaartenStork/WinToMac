@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#
+# winmac — run Windows-only Steam games on Apple Silicon Macs.
+#
+#   winmac doctor              check the environment
+#   winmac setup               install the Wine 11 + Steam stack
+#   winmac list                show configured games
+#   winmac fetch   <game>      download the Windows depot, install into prefix
+#   winmac install <game>      apply renderer fixes and per-app overrides
+#   winmac launch  <game>      start Steam with the right environment
+#   winmac status  <game>      show what is actually doing the rendering
+#   winmac play    <game>      fetch + install + launch
+#
+# Config lives in games/<game>.conf. Start from games/EXAMPLE.conf.
+
+set -euo pipefail
+
+WINMAC_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "$WINMAC_ROOT/lib/common.sh"
+# shellcheck source=lib/steps.sh
+source "$WINMAC_ROOT/lib/steps.sh"
+
+usage() {
+    sed -n '3,20p' "$0" | sed 's/^# \{0,1\}//'
+    exit "${1:-0}"
+}
+
+main() {
+    local cmd="${1:-}"; shift || true
+
+    case "$cmd" in
+        doctor)  step_doctor ;;
+        setup)   step_setup ;;
+        list)    list_games ;;
+        fetch)   load_game "${1:-}"; step_fetch ;;
+        install) load_game "${1:-}"; step_install ;;
+        launch)  load_game "${1:-}"; step_launch ;;
+        status)  load_game "${1:-}"; step_status ;;
+        play)
+            load_game "${1:-}"
+            step_fetch || die "Fetch incomplete — follow the steps above, then retry."
+            step_install
+            step_launch
+            ;;
+        ""|-h|--help|help) usage 0 ;;
+        *) log_err "Unknown command: $cmd"; usage 1 ;;
+    esac
+}
+
+main "$@"
