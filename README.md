@@ -28,6 +28,34 @@ through Steam.
 Verified end to end on Mewgenics. The pipeline is game-agnostic, but every game
 is its own adventure.
 
+## The stack
+
+This is built on **Wine**. Nothing here emulates a PC. Each layer translates
+for the one above it:
+
+```
+   Your Windows game                  an unmodified Windows .exe
+        |
+   Mesa OpenGL                        real OpenGL, sitting next to the .exe,
+        |                             because Wine's macOS GL driver is broken
+   Steam for Windows                  the game must be launched from here
+        |
+   Wine 11                            translates Windows API calls into macOS
+        |
+   Rosetta 2                          runs Wine's x86_64 binary on Apple Silicon
+        |
+   macOS on Apple Silicon
+```
+
+Wine translates API calls rather than emulating a CPU, and Rosetta 2 handles
+the actual x86 to ARM instruction translation. That is why performance is
+usually fine, and why the graphics layer is where things go wrong instead.
+
+**Whisky is not an alternative to Wine.** It is a Mac GUI around one specific
+old Wine build (CrossOver 22.1.1, which is Wine 7.7 from 2022). It is frozen
+there, and the modern Steam client cannot run on it. Moving to current Wine is
+what fixes Steam.
+
 ## Requirements
 
 - Apple Silicon Mac, macOS 26 or later

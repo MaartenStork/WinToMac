@@ -1,6 +1,33 @@
 # How it works
 
-Four stages, matching the four things that break.
+## The stack
+
+```
+   Your Windows game                  an unmodified Windows .exe
+        |
+   Mesa OpenGL                        real OpenGL, sitting next to the .exe,
+        |                             because Wine's macOS GL driver is broken
+   Steam for Windows                  the game must be launched from here
+        |
+   Wine 11                            translates Windows API calls into macOS
+        |
+   Rosetta 2                          runs Wine's x86_64 binary on Apple Silicon
+        |
+   macOS on Apple Silicon
+```
+
+Wine is the core of this. It translates Windows API calls into macOS ones
+rather than emulating a PC, and Rosetta 2 handles x86 to ARM instruction
+translation underneath it. Neither is emulation in the console-emulator sense,
+which is why the CPU cost is modest and why graphics is the part that breaks.
+
+The Mesa layer is the only place we step outside Wine, and even then Wine is
+still loading and running it. We just tell Wine to use Mesa's `opengl32`
+instead of its own, for one executable.
+
+## The four stages
+
+Each stage matches one of the four things that break.
 
 ## 1. Downloading
 
